@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>X-Tag Gestures</title>
+	<link rel="stylesheet" type="text/css" href="../src/main.css"/>
+    
+
+	<style>
+		body {
+			margin: 0;
+			padding: 20px;
+		}
+		
+		#wrap {
+			max-width: 600px;
+			margin: 0 auto;
+		}
+		
+		.gesture-pad {
+			/* width: 60%;
+			max-width: 300px;*/
+			height: 300px; 
+			background: #eee;
+			border: 1px solid #aaa;
+			border-radius: 4px;
+			-webkit-transition: background-color 0.4s ease-out;
+			-moz-transition: background-color 0.4s ease-out;
+			-ms-transition: background-color 0.4s ease-out;
+			-o-transition: background-color 0.4s ease-out;
+			transition: background-color 0.4s ease-out;
+		}
+		
+		.gesture-success {
+			background-color: #B3FFA0;
+		}
+		
+		section ul {
+			/*float: right;*/
+			width: 40%;
+		}
+		
+		.touch-fx {
+			position: absolute;
+			height: 40px;
+			width: 40px;
+			background: pink;
+			border-radius: 50%;
+			z-index: 1000;
+			-webkit-transform: translate(-50%, -50%);
+			-moz-transform: translate(-50%, -50%);
+			-ms-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+		}
+		
+		.touch-fx-ring {
+			-webkit-animation: 1s ease 0s normal forwards 1 touch-fx-ring;
+			-moz-animation: 1s ease 0s normal forwards 1 touch-fx-ring;
+			-ms-animation: 1s ease 0s normal forwards 1 touch-fx-ring;
+			animation: 1s ease 0s normal forwards 1 touch-fx-ring;
+		}
+		
+		@-webkit-keyframes touch-fx-ring {
+		  0% { opacity: 0; }
+		  50% { opacity: 100; }
+		  100% { opacity: 0; }
+		}
+		@-moz-keyframes touch-fx-ring {
+		  0% { opacity: 0; }
+		  50% { opacity: 100; }
+		  100% { opacity: 0; }
+		}
+		@-o-keyframes touch-fx-ring {
+		  0% { opacity: 0; }
+		  50% { opacity: 100; }
+		  100% { opacity: 0; }
+		}
+		@keyframes touch-fx-ring {
+		  0% { opacity: 0; }
+		  50% { opacity: 100; }
+		  100% { opacity: 0; }
+		}
+		
+		#centroid {
+			position: absolute;
+			height: 10px;
+			width: 10px;
+			top: 0;
+			left: 0;
+			background: blue;
+			-webkit-transform: translate(-50%, -50%);
+			-moz-transform: translate(-50%, -50%);
+			-ms-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+		}
+		
+		
+		
+	</style>
+</head>
+
+<body>
+    <div id="msg"></div>
+	<div id="wrap">
+	
+		<h2>Swipe</h2>
+		<section id="swipe">
+			<div id="swipe_pad" class="gesture-pad"></div>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</section>
+	
+	</div>
+	<div id="centroid"></div>
+</body>
+
+<script>
+var msg = document.getElementById('msg');
+var msgs = [];
+var log = function(m, e){
+    if (e) console.log(e.type, e);
+    msgs.unshift(m);
+    msgs = msgs.slice(0,10);
+    msg.innerHTML = msgs.join('<br/>');
+};
+
+var logEvent = function(e){
+  log((e.target && e.target.id || e.target.nodeName) + ' ' + e.type, e);
+};
+</script>
+<script type="text/javascript" src="x-tag-components.js"></script> 
+<script type="text/javascript" src="../src/main.js"></script>      
+<script>
+	
+	var centroid = document.getElementById('centroid');
+	
+	xtag.addEvents(document, {
+		'keydown:keypass(27)': function(e){
+			msgs = [];
+			msg.innerHTML = '';
+		}
+	});
+	
+	xtag.addEvents(document, {
+	    'touchstart': function(e){ e.preventDefault(); },
+		'transitionend:delegate(.gesture-pad)': function(e){
+			xtag.removeClass(this, 'gesture-success gesture-cancel');
+		},
+		'pinch': function(e){
+		  centroid.style.top = Math.round(e.detail.centroid.y) + 'px';
+		  centroid.style.left = Math.round(e.detail.centroid.x) + 'px';
+		},
+		//'move': function(e){
+		//  logEvent(e);
+		//}
+	});
+	
+	var myevents = xtag.addEvents(document, {
+		'longtap:delegate(#swipe .gesture-pad)': function(e){
+		  logEvent(e);
+		},
+		//'tapmove': function(e){
+		//  logEvent(e);
+		//}
+	});
+
+	
+	var myevents2 = xtag.addEvents(document.getElementById('swipe'), {
+		'swipe:gesture({ "timeout": 1000, "direction": "right" })': function(e){
+		  logEvent(e);
+		  xtag.addClass(e.target, 'gesture-success');
+		}
+	});
+	
+</script>
+
+</html>
