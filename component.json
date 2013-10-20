@@ -1,6 +1,6 @@
 {
-  "name": "stub",
-  "description": "",
+  "name": "gestures",
+  "description": "custom gesture events to help you get in-touch with your custom elements",
   "version": "0.1.0",
   "keywords": [
     "web-components",    
