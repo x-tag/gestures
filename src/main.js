@@ -1,4 +1,3 @@
-
 (function(){
   
   var directions = {
@@ -79,6 +78,9 @@
         return ((Number(pseudo.value) || 1) == (e.touches ? e.touches.length : 1)) ? 
           condition.apply(this, xtag.toArray(arguments)) : null;
       }
+    },
+    action: function(pseudo, e){
+      return (Number(pseudo.value) || 1) == (e.touches ? e.touches.length : 1);      
     }
   }; 
   
@@ -201,7 +203,6 @@
               if ('startDistance' in custom && distance != start) {
                 custom.startDistance = distance;
                 return {
-                  area: 0,
                   distance: distance,
                   centroid: getCentroid(touches),
                   direction: distance > start ? 'out' : 'in'
